@@ -95,7 +95,6 @@ const BookingCinema = () => {
     }, {} as Record<string, Seat[]>);
   };
 
-  // ── Loading ────────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-4">
@@ -108,7 +107,6 @@ const BookingCinema = () => {
     );
   }
 
-  // ── Error ──────────────────────────────────────────────────────────────────
   if (error || !data?.data) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-4 px-4">

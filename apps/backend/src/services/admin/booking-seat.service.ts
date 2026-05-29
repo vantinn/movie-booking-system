@@ -17,13 +17,12 @@ export const getAllBookingSeat = async (): Promise<BookingSeat[]> => {
 export const getBookingSeatById = async (id: string): Promise<BookingSeat | null> => {
     try {
         const bookingSeat = await bookingSeatRepo.findOneBy({ id });
-
         if (!bookingSeat) {
             throw new AppError('Booking seat not found', 404);
         }
         return bookingSeat;
     } catch (error) {
-        console.error('getBookingSeatById error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Error retrieving booking seat', 500);
     }
 };
@@ -45,17 +44,22 @@ export const deleteBookingSeat = async (id: string): Promise<void> => {
             throw new AppError('Booking seat not found', 404);
         }
     } catch (error) {
-        console.error('deleteBookingSeat error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to delete booking seat', 500);
     }
 };
 
 export const updateBookingSeat = async (id: string, data: Partial<BookingSeat>): Promise<BookingSeat> => {
-    const updateBookingSeat = await bookingSeatRepo.preload({ id, ...data })
-    if (!updateBookingSeat) {
-        throw new AppError('Booking seat not found')
+    try {
+        const updated = await bookingSeatRepo.preload({ id, ...data });
+        if (!updated) {
+            throw new AppError('Booking seat not found', 404);
+        }
+        return await bookingSeatRepo.save(updated);
+    } catch (error) {
+        if (error instanceof AppError) throw error;
+        throw new AppError('Failed to update booking seat', 500);
     }
-    return await bookingSeatRepo.save(updateBookingSeat)
 };
 
 

@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { config } from "../config";
 import { User } from "../entities/user.entity";
 import { UserRole } from '../enums/role';
+import { AppError } from './app-error';
 
 
 export interface AuthPayload extends JwtPayload {
@@ -29,16 +30,15 @@ function isAuthPayload(decoded: unknown): decoded is AuthPayload {
 export const verifyRefreshToken = (token: string): AuthPayload => {
     const decoded = jwt.verify(token, config.jwtRefreshSecret);
     if (isAuthPayload(decoded)) {
-        return decoded
+        return decoded;
     }
-    throw new Error('Invalid refresh token payload');
-
+    throw new AppError('Invalid refresh token payload', 401);
 };
 
 export const verifyAccessToken = (token: string): AuthPayload => {
     const decoded = jwt.verify(token, config.jwtSecret);
     if (typeof decoded === 'string' || !('userId' in decoded)) {
-        throw new Error("Invalid token payload");
+        throw new AppError('Invalid token payload', 401);
     }
     return decoded as AuthPayload;
 };

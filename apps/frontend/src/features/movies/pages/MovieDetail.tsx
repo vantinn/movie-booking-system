@@ -12,7 +12,6 @@ export default function MovieDetailPage() {
     const router  = useRouter();
     const id      = params.id as string;
 
-    // Default to today if no date param
     const date    = search.get('date') || todayVN();
 
     const { movie, byCinema, isLoading, isError } = useMovieDetailData(id, date);
@@ -25,7 +24,6 @@ export default function MovieDetailPage() {
         router.replace(`/movies/${id}?${params.toString()}`, { scroll: false });
     };
 
-    // ── Loading ─────────────────────────────────────────────────────
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[70vh] bg-zinc-950 gap-4">
@@ -38,7 +36,6 @@ export default function MovieDetailPage() {
         );
     }
 
-    // ── Error ────────────────────────────────────────────────────────
     if (isError || !movie) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[70vh] bg-zinc-950 gap-5 px-4">

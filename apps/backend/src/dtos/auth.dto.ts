@@ -1,4 +1,4 @@
-import { IsEmail, isStrongPassword, Length } from 'class-validator';
+import { IsEmail, Length } from 'class-validator';
 import { UserRole } from '../enums/role';
 export interface AuthDataResponse {
     accessToken: string;
@@ -22,13 +22,6 @@ export interface AuthDataResponseRegister {
         role: UserRole;
     } | null;
 
-}
-
-export interface ServiceResult<T> {
-    success: boolean
-    message: string
-    code?: string
-    data?: T
 }
 
 

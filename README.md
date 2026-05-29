@@ -1,4 +1,4 @@
-# VT Cinema — Movie Booking System
+# Movie Booking System
 
 A full-stack online movie ticket booking platform for **VT Cinema** — a cinema chain operating across Đà Nẵng & Quảng Nam, Vietnam. Users can browse movies, select showtimes, pick seats, and pay securely. Admins can manage the entire catalogue via a dedicated API layer.
 
@@ -365,4 +365,4 @@ npx vitest
 
 ---
 
-> **VT Cinema** — *Đặt vé nhanh, trải nghiệm chuẩn.*
+

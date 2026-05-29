@@ -7,8 +7,6 @@ import { body } from 'express-validator';
 
 const router = Router();
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
-
 router.post('/login',
     [
         body('email').isEmail(),
@@ -33,21 +31,8 @@ router.post('/logout', authController.logout);
 
 router.post('/refresh', authController.refreshAccessToken);
 
-// ── OTP ───────────────────────────────────────────────────────────────────────
-
-/**
- * POST /api/public/auth/send-otp
- * Body: { email: string, full_name?: string }
- * Generates a 6-digit OTP and emails it to the user.
- * Rate-limited: 3 sends per email per hour.
- */
 router.post('/send-otp', authController.sendOtpController);
 
-/**
- * POST /api/public/auth/verify-otp
- * Body: { email: string, otp: string }
- * Marks the OTP as verified so the subsequent /register call is allowed.
- */
 router.post('/verify-otp', authController.verifyOtpController);
 
 export default router;

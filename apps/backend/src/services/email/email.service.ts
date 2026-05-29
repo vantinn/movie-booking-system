@@ -1,15 +1,5 @@
-/**
- * Email Service — Gmail SMTP via Nodemailer
- * ─────────────────────────────────────────
- * Sends transactional emails for VT Cinema.
- * Gmail credentials are read from env:
- *   GMAIL_USER          - sender address
- *   GMAIL_APP_PASSWORD  - Google App Password (not the account password)
- */
-
 import nodemailer from 'nodemailer';
 
-// ── Transporter (singleton) ───────────────────────────────────────────────────
 let _transporter: nodemailer.Transporter | null = null;
 
 function getTransporter(): nodemailer.Transporter {
@@ -25,7 +15,6 @@ function getTransporter(): nodemailer.Transporter {
     return _transporter;
 }
 
-// ── HTML Template ─────────────────────────────────────────────────────────────
 function buildOtpEmailHtml(otpCode: string, fullName: string): string {
     const digits = otpCode.split('');
     const digitBoxes = digits
@@ -64,7 +53,6 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
 
-          <!-- ── Logo header ─────────────────────────────────────── -->
           <tr>
             <td align="center" style="padding-bottom:32px;">
               <div style="
@@ -85,7 +73,6 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
             </td>
           </tr>
 
-          <!-- ── Card ───────────────────────────────────────────── -->
           <tr>
             <td style="
               background:#18181b;
@@ -93,12 +80,10 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
               border-radius:20px;
               overflow:hidden;
             ">
-              <!-- Red top accent -->
               <div style="height:4px;background:linear-gradient(90deg,#dc2626,#ef4444);"></div>
 
               <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 40px 36px;">
 
-                <!-- Heading -->
                 <tr>
                   <td style="padding-bottom:8px;">
                     <p style="margin:0;font-size:13px;font-weight:600;color:#dc2626;text-transform:uppercase;letter-spacing:1.5px;">
@@ -122,7 +107,6 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
                   </td>
                 </tr>
 
-                <!-- OTP digits -->
                 <tr>
                   <td align="center" style="padding-bottom:32px;">
                     <table cellpadding="0" cellspacing="0">
@@ -131,14 +115,12 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
                   </td>
                 </tr>
 
-                <!-- Divider -->
                 <tr>
                   <td style="padding-bottom:24px;">
                     <div style="height:1px;background:rgba(255,255,255,0.07);"></div>
                   </td>
                 </tr>
 
-                <!-- Expiry info -->
                 <tr>
                   <td style="padding-bottom:24px;">
                     <table cellpadding="0" cellspacing="0" style="
@@ -151,7 +133,7 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
                       <tr>
                         <td>
                           <p style="margin:0;font-size:13px;color:#fca5a5;font-weight:600;">
-                            ⏱ Mã OTP có hiệu lực trong <strong>10 phút</strong>
+                            Mã OTP có hiệu lực trong <strong>10 phút</strong>
                           </p>
                           <p style="margin:6px 0 0;font-size:12px;color:#71717a;">
                             Nếu bạn không yêu cầu điều này, hãy bỏ qua email này.
@@ -162,11 +144,10 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
                   </td>
                 </tr>
 
-                <!-- Security note -->
                 <tr>
                   <td>
                     <p style="margin:0;font-size:12px;color:#52525b;line-height:1.6;">
-                      🔒 VT Cinema sẽ <strong style="color:#71717a;">không bao giờ</strong> yêu cầu bạn chia sẻ mã OTP này qua điện thoại hoặc chat. Hãy giữ bí mật mã này.
+                      VT Cinema sẽ <strong style="color:#71717a;">không bao giờ</strong> yêu cầu bạn chia sẻ mã OTP này qua điện thoại hoặc chat. Hãy giữ bí mật mã này.
                     </p>
                   </td>
                 </tr>
@@ -175,7 +156,6 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td align="center" style="padding-top:28px;">
               <p style="margin:0;font-size:12px;color:#3f3f46;">
@@ -195,14 +175,6 @@ function buildOtpEmailHtml(otpCode: string, fullName: string): string {
 </html>`;
 }
 
-// ── Public API ────────────────────────────────────────────────────────────────
-
-/**
- * Send an OTP verification email.
- * @param to      Recipient email address
- * @param otpCode 6-digit OTP string
- * @param fullName Recipient's display name (personalises the greeting)
- */
 export async function sendOtpEmail(
     to: string,
     otpCode: string,

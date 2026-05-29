@@ -1,10 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction } from 'express';
 import * as seatService from '../../services/public/seat.service';
 import { TypedRequest, TypedResponse } from '../../types/handler';
 import { Seat } from '../../entities/seat.entity';
-import { GetSeatsByShowTimeQuery } from '../../dtos/seat.dto';
-import { AppError } from '../../utils/app-error';
-import { log } from 'console';
 
 export const getAllSeat = async (req: TypedRequest, res: TypedResponse<Seat[]>, next: NextFunction) => {
     const seat = await seatService.getAllSeats();

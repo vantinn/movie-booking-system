@@ -27,24 +27,20 @@ export class Booking {
     @Column('uuid', { nullable: true })
     showtimeid!: string;
 
-    ///////
     @Column()
     facilities!: string;
 
     @Column()
     booking_time!: Date;
 
-
     @Column('decimal', { nullable: true })
-    totalPrice!: number
+    totalPrice!: number;
 
-    //Session
     @Column({ nullable: true })
-    stripeSessionId!: string
+    stripeSessionId!: string;
 
-    //refund/reconcile
     @Column({ nullable: true })
-    stripePaymentIntentId!: string
+    stripePaymentIntentId!: string;
 
     @Column({ type: 'timestamp', nullable: true })
     expiresAt!: Date

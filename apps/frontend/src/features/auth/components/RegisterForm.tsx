@@ -9,12 +9,10 @@ import {
 import Link from 'next/link';
 import { useRegister } from '../hooks/useRegister';
 
-// ── Step labels ───────────────────────────────────────────────────────────────
 const STEP_LABELS = ['Tài khoản', 'Xác minh OTP', 'Thông tin'];
 
-// ── OTP countdown (10 min) ────────────────────────────────────────────────────
 function useOtpCountdown(active: boolean) {
-  const [seconds, setSeconds] = useState(600); // 10 min
+  const [seconds, setSeconds] = useState(600);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const reset = () => {
@@ -36,7 +34,6 @@ function useOtpCountdown(active: boolean) {
   return { timeLabel: `${mm}:${ss}`, expired: seconds === 0, reset };
 }
 
-// ── 6-digit OTP input ─────────────────────────────────────────────────────────
 interface OtpInputProps {
   value: string;
   onChange: (v: string) => void;
@@ -108,7 +105,6 @@ function OtpInput({ value, onChange, disabled }: OtpInputProps) {
   );
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
 const RegisterForm = ({ onClose }: { onClose: () => void }) => {
   const {
     formData, otpCode, setOtpCode,
@@ -139,7 +135,6 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
 
   useEffect(() => () => { if (resendRef.current) clearInterval(resendRef.current); }, []);
 
-  // ── Step transitions ──────────────────────────────────────────────────────
   const goToOtp = async () => {
     const ok = await handleSendOtp();
     if (ok) {
@@ -162,7 +157,6 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  // ── Shared styles ─────────────────────────────────────────────────────────
   const inputBase =
     'w-full bg-zinc-800 border border-white/10 text-white placeholder-zinc-600 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition-colors';
   const labelClass =

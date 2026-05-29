@@ -23,7 +23,6 @@ export default function CinemasPage() {
         });
     }, [cinemas, activeDistrict, search]);
 
-    // ── Loading ─────────────────────────────────────────────────────
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] bg-zinc-950 gap-4">
@@ -36,7 +35,6 @@ export default function CinemasPage() {
         );
     }
 
-    // ── Error ────────────────────────────────────────────────────────
     if (isError) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] bg-zinc-950 gap-5 px-4">

@@ -16,17 +16,15 @@ export const createMovie = async (data: CreateMovieDTO): Promise<Movies> => {
 };
 
 export const updateMovie = async (id: string, data: Partial<Movies>): Promise<Movies> => {
-
     try {
-        const updateMovie = await moviesRepo.preload({ id, ...data })
+        const updateMovie = await moviesRepo.preload({ id, ...data });
         if (!updateMovie) {
-            throw new AppError('Movie not found')
+            throw new AppError('Movie not found', 404);
         }
         return await moviesRepo.save(updateMovie);
     } catch (error) {
-        console.error('updateMovie error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to update movie', 500);
-
     }
 };
 
@@ -37,7 +35,7 @@ export const deleteMovie = async (id: string): Promise<void> => {
             throw new AppError('Movie not found', 404);
         }
     } catch (error) {
-        console.error(`deleteMovie error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to delete movie', 500);
     }
 };

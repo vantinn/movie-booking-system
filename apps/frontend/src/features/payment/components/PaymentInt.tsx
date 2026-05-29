@@ -42,7 +42,6 @@ export default function PaymentPage() {
   // Suppress unused warning for updateBooking (wired for future status updates)
   void updateBooking;
 
-  // ── Guards ────────────────────────────────────────────────────────────────
   if (!bookingId) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-4 px-4">

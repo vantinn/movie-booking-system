@@ -10,7 +10,7 @@ export const validateBody = <T extends object>(dtoClass: DtoConstructor<T>) => {
     return async (req: TypedRequest<{}, T>, res: Response, next: NextFunction) => {
         const instance = plainToInstance(dtoClass, req.body);
         const errors = await validate(instance, {
-            whitelist: true,          // strip unknown properties
+            whitelist: true,
             forbidNonWhitelisted: false,
             skipMissingProperties: false,
         });

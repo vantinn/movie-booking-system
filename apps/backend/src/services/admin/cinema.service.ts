@@ -22,7 +22,7 @@ export const getCinemaById = async (id: string): Promise<Cinema> => {
         }
         return cinema;
     } catch (error) {
-        console.error(`getCinemaById error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to retrieve cinema', 500);
     }
 };
@@ -38,7 +38,6 @@ export const createCinema = async (data: CreateCinemaDTO): Promise<Cinema> => {
 };
 
 export const updateCinema = async (id: string, data: Partial<Cinema>): Promise<Cinema> => {
-
     try {
         const update = await cinemaRepo.preload({ id, ...data });
         if (!update) {
@@ -46,7 +45,7 @@ export const updateCinema = async (id: string, data: Partial<Cinema>): Promise<C
         }
         return await cinemaRepo.save(update);
     } catch (error) {
-        console.error('updateCinema error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to update cinema', 500);
     }
 };
@@ -58,7 +57,7 @@ export const deleteCinema = async (id: string): Promise<void> => {
             throw new AppError('Cinema not found', 404);
         }
     } catch (error) {
-        console.error(`deleteCinema error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to delete cinema', 500);
     }
 };

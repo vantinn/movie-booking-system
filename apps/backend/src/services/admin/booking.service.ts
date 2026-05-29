@@ -17,13 +17,12 @@ export const getAllBooking = async (): Promise<Booking[]> => {
 export const getBookingById = async (id: string): Promise<Booking | null> => {
     try {
         const booking = await bookingRepo.findOneBy({ id });
-
         if (!booking) {
             throw new AppError('Booking not found', 404);
         }
         return booking;
     } catch (error) {
-        console.error('getBookingById error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Error retrieving booking', 500);
     }
 };
@@ -36,21 +35,20 @@ export const deleteBooking = async (id: string): Promise<void> => {
             throw new AppError('Booking not found', 404);
         }
     } catch (error) {
-        console.error('deleteBooking error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to delete booking', 500);
     }
 };
 
 export const updateBooking = async (id: string, data: Partial<Booking>): Promise<Booking> => {
-
     try {
-        const updateBooking = await bookingRepo.preload({ id, ...data })
-        if (!updateBooking) {
-            throw new AppError('Booking not found')
+        const updated = await bookingRepo.preload({ id, ...data });
+        if (!updated) {
+            throw new AppError('Booking not found', 404);
         }
-        return await bookingRepo.save(updateBooking)
+        return await bookingRepo.save(updated);
     } catch (error) {
-        console.error('updateBooking error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to update booking', 500);
     }
 };

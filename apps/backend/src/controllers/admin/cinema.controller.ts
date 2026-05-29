@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction } from 'express';
 import * as cinemaService from '../../services/admin/cinema.service';
 import { TypedRequest, TypedResponse } from '../../types/handler';
 import { Cinema } from '../../entities/cinema.entity';

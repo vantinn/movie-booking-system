@@ -3,31 +3,28 @@ import { Booking } from "../../entities/booking.entity";
 import { Seat } from "../../entities/seat.entity";
 
 import { BookingSeat } from "../../entities/booking-seat.entity";
-import { CreateBookingDTO, UpdateBookingDTO, checkStatusDto } from "../../dtos/booking.dto";
+import { CreateBookingDTO, UpdateBookingDTO } from "../../dtos/booking.dto";
 import { StatusBooking } from "../../enums/status";
 import { LessThan, Repository, MoreThan, In } from "typeorm";
 import { AppError } from '../../utils/app-error';
 import { StatusSeat } from '../../enums/status';
 
 
-
 export class BookingService {
     private bookingRepo: Repository<Booking>;
     private bookingSeatRepo: Repository<BookingSeat>;
     private seatRepo: Repository<Seat>;
-    ///
 
     constructor() {
         this.bookingRepo = AppDataSource.getRepository(Booking);
         this.bookingSeatRepo = AppDataSource.getRepository(BookingSeat);
-        this.seatRepo = AppDataSource.getRepository(Seat)
+        this.seatRepo = AppDataSource.getRepository(Seat);
     }
 
     async getBookingById(id: string, userId?: string): Promise<Booking | null> {
         try {
             return this.bookingRepo.findOne({
                 where: { id, user: { id: userId } },
-
                 relations: [
                     "booking_seats",
                     "booking_seats.seat",
@@ -37,9 +34,8 @@ export class BookingService {
                     "showtime.movie",
                     "user",
                 ]
-            })
+            });
         } catch (error) {
-            console.error('getBookingById error:', error);
             throw new AppError('Failed to retrieve booking', 500);
         }
     }
@@ -48,9 +44,9 @@ export class BookingService {
     async createBooking(dto: CreateBookingDTO): Promise<Booking> {
         return await AppDataSource.transaction(async (manager) => {
             const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-            const totalPrice = dto.seats.reduce((sum, s) => (sum + s.price) * 100, 0)
+            const totalPrice = dto.seats.reduce((sum, s) => (sum + s.price) * 100, 0);
 
-            const seatIds = dto.seats.map((s) => s.seatId)
+            const seatIds = dto.seats.map((s) => s.seatId);
 
             const existingCheckSeats = await manager.find(BookingSeat, {
                 where: [
@@ -74,13 +70,13 @@ export class BookingService {
             });
 
             if (existingCheckSeats.length > 0) {
-                throw new Error(
+                throw new AppError(
                     `Seats are already held or booked: ${existingCheckSeats
                         .map((s) => s.seat_id)
-                        .join(", ")}`
+                        .join(", ")}`,
+                    409
                 );
             }
-
 
             const booking = manager.create(Booking, {
                 user_id: dto.userId,
@@ -94,8 +90,6 @@ export class BookingService {
 
             await manager.save(booking);
 
-
-
             const bookingSeats = dto.seats.map((s) =>
                 manager.create(BookingSeat, {
                     booking_id: booking.id,
@@ -106,9 +100,8 @@ export class BookingService {
             );
 
             await manager.save(bookingSeats);
-            ////////
-            await manager.update(Seat, { id: In(seatIds) }, { active: false })
 
+            await manager.update(Seat, { id: In(seatIds) }, { active: false });
 
             booking.booking_seats = bookingSeats;
 
@@ -138,15 +131,17 @@ export class BookingService {
         for (const booking of expiredBookings) {
             booking.status = StatusBooking.CANCELLED;
             for (const bookingSeat of booking.booking_seats) {
-                bookingSeat.statusSeat = StatusSeat.RELEASED
+                bookingSeat.statusSeat = StatusSeat.RELEASED;
             }
             await this.bookingRepo.save(booking);
-            await this.seatRepo.update({ id: In(booking.booking_seats) }, { active: false })
+
+            const seatIds = booking.booking_seats.map((bs) => bs.seat_id);
+            if (seatIds.length > 0) {
+                await this.seatRepo.update({ id: In(seatIds) }, { active: true });
+            }
         }
 
         return expiredBookings.length;
-
-
     }
 
 
@@ -175,11 +170,4 @@ export class BookingService {
             return booking;
         });
     }
-
-
-
-
 }
-
-
-

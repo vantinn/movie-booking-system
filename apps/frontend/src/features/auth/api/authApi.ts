@@ -9,7 +9,6 @@ export const authApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
 
-    // ── Login ────────────────────────────────────────────────────────────
     login: builder.mutation<AuthResponse, LoginPayload>({
       query: (data) => ({
         url: 'public/auth/login',
@@ -28,7 +27,6 @@ export const authApi = createApi({
       },
     }),
 
-    // ── Register ─────────────────────────────────────────────────────────
     register: builder.mutation<AuthResponse, RegisterPayload>({
       query: (data) => ({
         url: 'public/auth/register',
@@ -47,7 +45,6 @@ export const authApi = createApi({
       },
     }),
 
-    // ── Refresh access token ──────────────────────────────────────────────
     refresh: builder.mutation<{ data: AuthResponse }, void>({
       query: () => ({
         url: 'public/auth/refresh',
@@ -69,7 +66,6 @@ export const authApi = createApi({
       },
     }),
 
-    // ── Logout ───────────────────────────────────────────────────────────
     logoutUser: builder.mutation<void, void>({
       query: () => ({
         url: 'public/auth/logout',
@@ -85,7 +81,6 @@ export const authApi = createApi({
       },
     }),
 
-    // ── Update own profile ───────────────────────────────────────────────
     updateUser: builder.mutation<{ data: User }, Partial<User> & { id: string }>({
       query: ({ id: _id, ...body }) => ({
         url: 'user/users/profile',
@@ -102,7 +97,6 @@ export const authApi = createApi({
       },
     }),
 
-    // ── Change password ──────────────────────────────────────────────────
     changePassword: builder.mutation<{ data: { message: string } }, { currentPassword: string; newPassword: string }>({
       query: (body) => ({
         url: 'user/users/change-password',
@@ -111,7 +105,6 @@ export const authApi = createApi({
       }),
     }),
 
-    // ── Send OTP to email ────────────────────────────────────────────────
     sendOtp: builder.mutation<{ message: string }, SendOtpPayload>({
       query: (body) => ({
         url: 'public/auth/send-otp',
@@ -121,7 +114,6 @@ export const authApi = createApi({
       }),
     }),
 
-    // ── Verify OTP (marks as verified server-side) ───────────────────────
     verifyOtp: builder.mutation<{ message: string }, VerifyOtpPayload>({
       query: (body) => ({
         url: 'public/auth/verify-otp',

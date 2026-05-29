@@ -25,8 +25,6 @@ export const useRegister = (onSuccess?: () => void) => {
 
   const [errorMsg,   setErrorMsg]   = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-
-  // OTP state
   const [otpCode, setOtpCode] = useState('');
 
   const [formData, setFormData] = useState<RegisterFormData>({
@@ -48,7 +46,6 @@ export const useRegister = (onSuccess?: () => void) => {
     if (successMsg) setSuccessMsg('');
   };
 
-  // ── Step 0 → 1: Send OTP ──────────────────────────────────────────────────
   const handleSendOtp = async (): Promise<boolean> => {
     setErrorMsg('');
     setSuccessMsg('');
@@ -84,7 +81,6 @@ export const useRegister = (onSuccess?: () => void) => {
     }
   };
 
-  // ── Resend OTP (same as send, no step change) ─────────────────────────────
   const handleResendOtp = async (): Promise<boolean> => {
     setErrorMsg('');
     setSuccessMsg('');
@@ -103,7 +99,6 @@ export const useRegister = (onSuccess?: () => void) => {
     }
   };
 
-  // ── Step 1 → 2: Verify OTP ────────────────────────────────────────────────
   const handleVerifyOtp = async (): Promise<boolean> => {
     setErrorMsg('');
     if (!otpCode || otpCode.length !== 6) {
@@ -124,19 +119,13 @@ export const useRegister = (onSuccess?: () => void) => {
     }
   };
 
-  // ── Step 2: Final register ────────────────────────────────────────────────
   const handleSubmit = async () => {
     setErrorMsg('');
     try {
       const { confirmPassword: _c, ...rest } = formData;
 
-      /**
-       * BUG FIX: class-validator's @IsOptional() skips validation ONLY for
-       * `undefined` and `null`, NOT for empty strings "".  Sending phoneNumber:""
-       * or dateOfBirth:"" would trigger @Matches / @IsDateString failures and
-       * return a 400 error even though the user left them blank intentionally.
-       * Strip empty strings → undefined so the backend treats them as absent.
-       */
+      // @IsOptional() skips validation only for undefined/null, not empty strings.
+      // Strip empty strings to undefined so the backend treats them as absent.
       const payload = {
         full_name:   rest.full_name,
         email:       rest.email,

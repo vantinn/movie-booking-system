@@ -20,13 +20,12 @@ export const getAllMovies = async (): Promise<Movies[]> => {
 export const getMovieById = async (id: string): Promise<Movies | null> => {
     try {
         const movie = await moviesRepo.findOneBy({ id });
-
         if (!movie) {
             throw new AppError('Movie not found', 404);
         }
         return movie;
     } catch (error) {
-        console.error(`getMovieById error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to retrieve movie', 500);
     }
 };
