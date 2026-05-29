@@ -1,0 +1,57 @@
+{
+  "name": "booking",
+  "meta": "delete all junk commits",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "ts-node src/app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "_moduleAliases": {
+    "@root": ".",
+    "@controllers": "src/controllers",
+    "@models": "src/models",
+    "@utils": "src/utils"
+  },
+  "description": "",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.51.0",
+    "@types/module-alias": "^2.0.4",
+    "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
+    "morgan": "^1.10.0",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.9",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "stripe": "^18.5.0",
+    "swagger-ui-express": "^5.0.1",
+    "tsoa": "^6.6.0",
+    "typeorm": "^0.3.25"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.6.0",
+    "@types/nodemailer": "^8.0.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
+  }
+}
