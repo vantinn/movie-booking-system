@@ -53,7 +53,7 @@ export class Seat {
     @Column('text', { default: 'available' })
     status!: string;
 
-    @ManyToOne(() => Room, (room) => room.seats) ////////////
+    @ManyToOne(() => Room, (room) => room.seats)
     @JoinColumn({ name: "room_id" })
     room!: Room;
 

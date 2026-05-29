@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction } from 'express';
 import * as roomService from '../../services/admin/room.service';
 import { TypedRequest, TypedResponse } from '../../types/handler';
 import { CreateRoomDTO, UpdateRoomDTO } from '../../dtos/room.dto';

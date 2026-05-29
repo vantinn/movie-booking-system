@@ -4,7 +4,6 @@ import { TypedRequest, TypedResponse } from '../../types/handler';
 import { UpdateUserDTO, ChangePasswordDTO } from '../../dtos/user.dto';
 import { User } from '../../entities/user.entity';
 import { AppError } from '../../utils/app-error';
-import { validateBody } from '../../middleware/validator.middleware';
 
 export const getProfile = async (
     req: TypedRequest,
@@ -15,7 +14,6 @@ export const getProfile = async (
     if (!userId) return next(new AppError('Unauthorized', 401));
 
     const user = await userService.getProfile(userId);
-    // Strip password_hash before sending
     const { password_hash: _pw, ...safeUser } = user as any;
     res.status(200).json({ data: safeUser });
 };

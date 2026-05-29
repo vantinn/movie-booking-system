@@ -16,7 +16,6 @@ const HomeMainContent = () => {
         router.push(`/movies/${movie.id}`);
     };
 
-    // ── Loading ──────────────────────────────────────────────────────────
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -29,7 +28,6 @@ const HomeMainContent = () => {
         );
     }
 
-    // ── Error ────────────────────────────────────────────────────────────
     if (isError) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-5 px-4">

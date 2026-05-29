@@ -22,7 +22,7 @@ export const getSeatById = async (id: string): Promise<Seat> => {
         }
         return seat;
     } catch (error) {
-        console.error(`getSeatById error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to retrieve seat', 500);
     }
 };
@@ -39,13 +39,13 @@ export const createSeats = async (seats: CreateSeatDTO[]): Promise<Seat[]> => {
 
 export const updateSeat = async (id: string, data: Partial<Seat>): Promise<Seat> => {
     try {
-        const updateSeat = await seatRepo.preload({ id, ...data })
-        if (!updateSeat) {
-            throw new AppError('Seat not found')
+        const updated = await seatRepo.preload({ id, ...data });
+        if (!updated) {
+            throw new AppError('Seat not found', 404);
         }
-        return await seatRepo.save(updateSeat)
+        return await seatRepo.save(updated);
     } catch (error) {
-        console.error('updateSeat error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to update seat', 500);
     }
 };
@@ -57,7 +57,7 @@ export const deleteSeat = async (id: string): Promise<void> => {
             throw new AppError('Seat not found', 404);
         }
     } catch (error) {
-        console.error(`deleteSeat error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to delete seat', 500);
     }
 };

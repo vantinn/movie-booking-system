@@ -13,10 +13,9 @@ const COOKIE_OPTIONS = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax') as 'strict' | 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
-// ── Login ─────────────────────────────────────────────────────────────────────
 export const login: ControllerHandler = async (
     req: TypedRequest<{}, LoginBody>,
     res: TypedResponse<AuthDataResponse>,
@@ -50,7 +49,6 @@ export const login: ControllerHandler = async (
     });
 };
 
-// ── Send OTP ──────────────────────────────────────────────────────────────────
 export const sendOtpController: ControllerHandler = async (req, res, next) => {
     try {
         const { email, full_name } = req.body as { email?: string; full_name?: string };
@@ -59,7 +57,6 @@ export const sendOtpController: ControllerHandler = async (req, res, next) => {
             return next(new AppError('Invalid email address.', 400));
         }
 
-        // Check if email already registered
         const userRepo = AppDataSource.getRepository(User);
         const existing = await userRepo.findOne({ where: { email: email.toLowerCase() } });
         if (existing) {
@@ -74,7 +71,6 @@ export const sendOtpController: ControllerHandler = async (req, res, next) => {
     }
 };
 
-// ── Verify OTP (standalone check, not consuming) ──────────────────────────────
 export const verifyOtpController: ControllerHandler = async (req, res, next) => {
     try {
         const { email, otp } = req.body as { email?: string; otp?: string };
@@ -83,7 +79,7 @@ export const verifyOtpController: ControllerHandler = async (req, res, next) => 
             return next(new AppError('Email and OTP code are required.', 400));
         }
 
-        verifyOtp(email, otp); // throws AppError on failure
+        verifyOtp(email, otp);
 
         res.status(200).json({ message: 'OTP is valid. You may proceed to complete registration.' });
     } catch (err) {
@@ -91,40 +87,34 @@ export const verifyOtpController: ControllerHandler = async (req, res, next) => 
     }
 };
 
-// ── Register ──────────────────────────────────────────────────────────────────
 export const registerController: ControllerHandler = async (
     req: TypedRequest<{}, CreateUserDTO>,
     res: TypedResponse<AuthDataResponseRegister>,
     next
 ) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return next(new AppError('Validation failed: ' + errors.array().map(e => e.msg).join(', '), 400));
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return next(new AppError('Validation failed: ' + errors.array().map(e => e.msg).join(', '), 400));
+        }
+
+        const result = await registerService(req.body);
+
+        if (result.refreshToken) {
+            res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
+        }
+
+        res.status(201).json({
+            data: {
+                accessToken: result.accessToken,
+                user: result.user,
+            },
+        });
+    } catch (err) {
+        next(err);
     }
-
-    const result = await registerService(req.body);
-
-    if (!result.success) {
-        const statusCode = result.code === 'OTP_NOT_VERIFIED' ? 403
-                         : result.code === 'EMAIL_EXISTS'     ? 409
-                         : 400;
-        return next(new AppError(result.message || 'Registration failed', statusCode));
-    }
-
-    // Set refresh token cookie — user is immediately logged in
-    if (result.data?.refreshToken) {
-        res.cookie('refreshToken', result.data.refreshToken, COOKIE_OPTIONS);
-    }
-
-    res.status(201).json({
-        data: {
-            accessToken: result.data!.accessToken,
-            user: result.data!.user,
-        },
-    });
 };
 
-// ── Refresh access token ──────────────────────────────────────────────────────
 export const refreshAccessToken: ControllerHandler = async (
     req: TypedRequest,
     res: TypedResponse<TokenResponse>
@@ -175,7 +165,6 @@ export const refreshAccessToken: ControllerHandler = async (
     }
 };
 
-// ── Logout ────────────────────────────────────────────────────────────────────
 export const logout: ControllerHandler = async (req, res) => {
     res.clearCookie('refreshToken', COOKIE_OPTIONS);
     res.status(204).send();

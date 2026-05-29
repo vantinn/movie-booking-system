@@ -25,11 +25,16 @@ export const createUser = async (data: CreateUserDTO): Promise<User> => {
 };
 
 export const updateUser = async (id: string, data: Partial<User>): Promise<User | null> => {
-    const updateUser = await userRepo.preload({ id, ...data })
-    if (!updateUser) {
-        throw new AppError('User not found')
+    try {
+        const updated = await userRepo.preload({ id, ...data });
+        if (!updated) {
+            throw new AppError('User not found', 404);
+        }
+        return await userRepo.save(updated);
+    } catch (error) {
+        if (error instanceof AppError) throw error;
+        throw new AppError('Failed to update user', 500);
     }
-    return await userRepo.save(updateUser)
 };
 
 export const deleteUser = async (id: string): Promise<void> => {
@@ -39,7 +44,7 @@ export const deleteUser = async (id: string): Promise<void> => {
             throw new AppError('User not found', 404);
         }
     } catch (error) {
-        console.error(`deleteUser error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to delete user', 500);
     }
 };
@@ -52,7 +57,7 @@ export const getUserById = async (id: string): Promise<User | null> => {
         }
         return user;
     } catch (error) {
-        console.error(`getUserById error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to retrieve user', 500);
     }
 };

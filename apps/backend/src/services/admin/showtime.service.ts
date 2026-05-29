@@ -17,13 +17,12 @@ export const getAllShowTime = async (): Promise<ShowTime[]> => {
 export const getShowTimeById = async (id: string): Promise<ShowTime | null> => {
     try {
         const showTime = await showTimeRepo.findOneBy({ id });
-
         if (!showTime) {
             throw new AppError('Showtime not found', 404);
         }
         return showTime;
     } catch (error) {
-        console.error('getShowTimeById error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Error retrieving showtime', 500);
     }
 };
@@ -45,7 +44,7 @@ export const deleteShowTime = async (id: string): Promise<void> => {
             throw new AppError('Showtime not found', 404);
         }
     } catch (error) {
-        console.error('deleteShowTime error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to delete showtime', 500);
     }
 };
@@ -53,15 +52,14 @@ export const deleteShowTime = async (id: string): Promise<void> => {
 
 
 export const updateShowTime = async (id: string, data: Partial<CreateShowTimeDTO>): Promise<ShowTime> => {
-
     try {
-        const updateShowTime = await showTimeRepo.preload({ id, ...data })
-        if (!updateShowTime) {
-            throw new AppError('Showtime not found')
+        const updated = await showTimeRepo.preload({ id, ...data });
+        if (!updated) {
+            throw new AppError('Showtime not found', 404);
         }
-        return await showTimeRepo.save(updateShowTime)
+        return await showTimeRepo.save(updated);
     } catch (error) {
-        console.error('updateShowTime error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to update showtime', 500);
     }
 };

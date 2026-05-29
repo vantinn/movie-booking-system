@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction } from 'express';
 import * as showTimeService from '../../services/admin/showtime.service';
 import { TypedRequest, TypedResponse } from '../../types/handler';
 import { CreateShowTimeDTO, UpdateShowTimeDTO } from '../../dtos/showtime.dto';

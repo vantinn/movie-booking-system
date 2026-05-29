@@ -16,13 +16,13 @@ export const getAllRoom = async (): Promise<Room[]> => {
 
 export const getRoomById = async (id: string): Promise<Room> => {
     try {
-        const seat = await roomRepo.findOneBy({ id });
-        if (!seat) {
+        const room = await roomRepo.findOneBy({ id });
+        if (!room) {
             throw new AppError('Room not found', 404);
         }
-        return seat;
+        return room;
     } catch (error) {
-        console.error(`getRoomById error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to retrieve room', 500);
     }
 };
@@ -38,15 +38,14 @@ export const createRoom = async (data: CreateRoomDTO): Promise<Room> => {
 };
 
 export const updateRoom = async (id: string, data: Partial<Room>): Promise<Room> => {
-
     try {
-        const updateRoom = await roomRepo.preload({ id, ...data })
-        if (!updateRoom) {
-            throw new AppError('Room not found')
+        const updated = await roomRepo.preload({ id, ...data });
+        if (!updated) {
+            throw new AppError('Room not found', 404);
         }
-        return await roomRepo.save(updateRoom)
+        return await roomRepo.save(updated);
     } catch (error) {
-        console.error('updateRoom error:', error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to update room', 500);
     }
 };
@@ -58,7 +57,7 @@ export const deleteRoom = async (id: string): Promise<void> => {
             throw new AppError('Room not found', 404);
         }
     } catch (error) {
-        console.error(`deleteRoom error (id: ${id}):`, error);
+        if (error instanceof AppError) throw error;
         throw new AppError('Failed to delete room', 500);
     }
 };

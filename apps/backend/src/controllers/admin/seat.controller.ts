@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction } from 'express';
 import * as seatService from '../../services/admin/seat.service';
 import { TypedRequest, TypedResponse } from '../../types/handler';
 import { Seat } from '../../entities/seat.entity';

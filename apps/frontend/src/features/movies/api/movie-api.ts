@@ -8,11 +8,10 @@ export const moviesApi = createApi({
     baseQuery: rawBaseQueryMovie,
     endpoints: (builder) => ({
         getAllMovies: builder.query<{ data: Movie[] }, void>({
-            query: () => 'movies', //use
+            query: () => 'movies',
         }),
         getMovieDetail: builder.query<MovieDTO, string>({
             query: (id) => `movies/${id}`,
-
             transformResponse: (response: { data: MovieDTO }) => response.data,
         }),
         getShowTimesByMovie: builder.query<ShowTimeDTO[], { movieId: string; date?: string }>({
@@ -21,28 +20,25 @@ export const moviesApi = createApi({
                 if (date) p.set('date', date);
                 return `showtimes?${p.toString()}`;
             },
-            /////////
             transformResponse: (response: { data: ShowTimeDTO[] }) => response.data,
         }),
         getRoomsByIds: builder.query<RoomDTO[], string[]>({
             query: (ids) => `rooms?ids=${ids.join(',')}`,
-            ////////
             transformResponse: (res: { data: RoomDTO[] }) => res.data,
-
             keepUnusedDataFor: 300,
         }),
         getCinemasByIds: builder.query<CinemaDTO[], string[]>({
             query: (ids) => `cinemas?ids=${ids.join(',')}`,
-            ////////
             transformResponse: (res: { data: CinemaDTO[] }) => res.data,
-
             keepUnusedDataFor: 300,
-
         }),
     }),
 });
 
-export const { useGetAllMoviesQuery, useGetMovieDetailQuery, useGetShowTimesByMovieQuery, useGetRoomsByIdsQuery,
-    useGetCinemasByIdsQuery } = moviesApi; //use
-
-
+export const {
+    useGetAllMoviesQuery,
+    useGetMovieDetailQuery,
+    useGetShowTimesByMovieQuery,
+    useGetRoomsByIdsQuery,
+    useGetCinemasByIdsQuery,
+} = moviesApi;

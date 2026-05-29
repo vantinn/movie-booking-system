@@ -13,7 +13,6 @@ import { Movie } from '@/features/movies/types/Movie';
 const SLIDE_INTERVAL = 5500;
 const BANNER_COUNT   = 5;
 
-// ── Age-rating helper (mock — no real field in Movie type) ───────────────────
 const AGE_LABELS = ['T13', 'T16', 'T18', 'K', 'P'];
 const getAgeLabel = (id: string) => AGE_LABELS[parseInt(id, 16) % AGE_LABELS.length];
 
@@ -56,7 +55,6 @@ const HomeContent = () => {
 
   const handleMovieSelect = (movie: Movie) => router.push(`/movies/${movie.id}`);
 
-  // ── Loading ──────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-950 gap-4">
@@ -69,7 +67,6 @@ const HomeContent = () => {
     );
   }
 
-  // ── Error ────────────────────────────────────────────────────────────────
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-950 gap-5 px-4">

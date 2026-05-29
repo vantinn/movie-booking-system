@@ -1,10 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction } from 'express';
 import * as bookingService from '../../services/user/booking.service';
 import { Booking } from '../../entities/booking.entity';
 import { TypedRequest, TypedResponse } from '../../types/handler';
-import { CreateBookingDTO, UpdateBookingDTO } from '../../dtos/booking.dto';
-import { UserRole } from '../../enums/role';
-import { assertOwnership } from '../../utils/assert-ownership';
+import { UpdateBookingDTO } from '../../dtos/booking.dto';
 import { AppError } from '../../utils/app-error';
 
 export const getBookingById = async (

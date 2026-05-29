@@ -4,10 +4,6 @@ import { TypedRequest, TypedResponse } from '../../types/handler';
 import { Cinema } from '../../entities/cinema.entity';
 import { AppError } from '../../utils/app-error';
 
-/**
- * GET /cinemas          → all cinemas
- * GET /cinemas?ids=a,b  → cinemas by ids (used by movie-detail showtime lookup)
- */
 export const getCinemasHandler = async (
     req: TypedRequest<{}, {}, { ids?: string }>,
     res: TypedResponse<Cinema[]>,
@@ -26,7 +22,6 @@ export const getCinemasHandler = async (
     }
 };
 
-/** GET /cinemas/:id — single cinema */
 export const getCinemaByIdHandler = async (
     req: TypedRequest<{ id: string }>,
     res: TypedResponse<Cinema>,
@@ -40,6 +35,5 @@ export const getCinemaByIdHandler = async (
     }
 };
 
-// Keep old exports for backward compatibility if anything else references them
 export const getAllCinema = getCinemasHandler;
 export const getCinemasByIdsHandler = getCinemasHandler;

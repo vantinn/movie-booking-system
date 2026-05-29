@@ -62,7 +62,6 @@ export default function PaymentSuccess() {
     }
   }, [data, refetch]);
 
-  // ── Loading ──────────────────────────────────────────────────────────────────
   if (!isSessionRestored || isLoading || waitForWebhook) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-5 px-4">
@@ -77,7 +76,6 @@ export default function PaymentSuccess() {
     );
   }
 
-  // ── Error ─────────────────────────────────────────────────────────────────────
   if (isError || !data) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-5 px-4">

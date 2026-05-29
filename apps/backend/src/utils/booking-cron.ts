@@ -1,6 +1,5 @@
 import cron from "node-cron";
 import { BookingService } from "../services/user/booking-final.service";
-import { BookingSeat } from "../../entities/booking-seat.entity";
 
 const bookingService = new BookingService();
 
@@ -30,4 +29,3 @@ cron.schedule("*/1 * * * *", async () => {
         );
     }
 });
-

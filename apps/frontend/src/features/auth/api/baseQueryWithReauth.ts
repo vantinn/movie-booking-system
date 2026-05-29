@@ -6,16 +6,6 @@ import { AuthResponse } from '@/features/auth/types/auth';
 
 const mutex = new Mutex();
 
-/**
- * Base query for auth + protected API calls.
- *
- * BUG FIXED: was hardcoded to a dead ngrok tunnel URL
- *   'https://postmaxillary-variably-justa.ngrok-free.dev/api/v1'
- * causing ALL login / register / refresh requests to fail at the network level.
- *
- * Now reads NEXT_PUBLIC_AUTH_API_URL (set in .env.local / deployment env)
- * with a safe localhost fallback for local development.
- */
 const baseQuery = fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_AUTH_API_URL || 'http://localhost:3000/api/',
     credentials: 'include',
@@ -48,12 +38,6 @@ export const baseQueryWithReauth: BaseQueryFn<
                     extraOptions
                 );
 
-                /**
-                 * BUG FIXED: the old code cast refreshResult.data to RefreshResponse
-                 * which has `accessToken` at the top level.  The actual backend
-                 * response is `{ data: { accessToken, refreshToken, user } }`, so
-                 * `accessToken` was always `undefined` — every retry also got 401.
-                 */
                 if (refreshResult.data) {
                     const payload = (refreshResult.data as { data: AuthResponse }).data;
 
@@ -64,7 +48,6 @@ export const baseQueryWithReauth: BaseQueryFn<
                             refreshToken: null,
                         }));
 
-                        // Retry the original request with the refreshed token
                         result = await baseQuery(args, api, extraOptions);
                     } else {
                         api.dispatch(logout());
@@ -76,7 +59,6 @@ export const baseQueryWithReauth: BaseQueryFn<
                 release();
             }
         } else {
-            // Another request already holds the mutex — wait for it to refresh, then retry
             await mutex.waitForUnlock();
             result = await baseQuery(args, api, extraOptions);
         }

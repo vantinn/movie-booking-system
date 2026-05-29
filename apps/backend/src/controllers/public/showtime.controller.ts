@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction } from 'express';
 import * as showTimeService from '../../services/public/showtime.service';
 import { TypedRequest, TypedResponse } from '../../types/handler';
 import { ShowTime } from '../../entities/showtime.entity';
 import { GetShowTimesByMovieQuery } from "../../dtos/showtime.dto";
 import { AppError } from '../../utils/app-error';
+
 export const getAllShowTime = async (req: TypedRequest, res: TypedResponse<ShowTime[]>, next: NextFunction) => {
     const showTime = await showTimeService.getAllShowTime();
     res.status(200).json({ data: showTime });
@@ -20,15 +21,6 @@ export const getShowTimesByMovie = async (
     res.status(200).json({ data });
 };
 
-/**
- * Merged handler:
- *   GET /showtimes              → all showtimes
- *   GET /showtimes?movieId=xxx  → filtered by movie (+ optional date)
- *
- * Previously getShowTimesByMovie was NEVER registered as a route — only
- * getAllShowTime was on GET '/'.  This fixes the bug where the frontend
- * would receive ALL showtimes regardless of which movie was being viewed.
- */
 export const getShowTimesHandler = async (
     req: TypedRequest<{}, {}, GetShowTimesByMovieQuery>,
     res: TypedResponse<ShowTime[]>,
@@ -47,27 +39,14 @@ export const getShowTimesHandler = async (
     }
 };
 
-
 export const getSeatByShowTime = async (
-    req: TypedRequest<{ showTimeId: string }>, res: TypedResponse<ShowTime>,
+    req: TypedRequest<{ showTimeId: string }>,
+    res: TypedResponse<ShowTime>,
     next: NextFunction
 ) => {
-    const showTime = await showTimeService.getSeatByShowTime(req.params.showTimeId)
+    const showTime = await showTimeService.getSeatByShowTime(req.params.showTimeId);
     if (!showTime) {
-        throw new AppError('not seat by showtime')
+        throw new AppError('Showtime not found', 404);
     }
     res.status(200).json({ data: showTime });
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
+};
